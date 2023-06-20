@@ -9,6 +9,5 @@
     "named-parameters-mapping": "warn",
     "no-console": "off",
     "not-rely-on-time": "off"
-  },
-  "ignore": "src/contracts/dependencies/**/*.sol"
+  }
 }
