@@ -77,6 +77,10 @@ abstract contract HelperContract is IDiamond, IDiamondLoupe, Test {
         return array;
     }
 
+    function removeSupportsInterface(bytes4[] memory array) public pure returns (bytes4[] memory) {
+        return removeElement(bytes4(0x01ffc9a7), array);
+    }
+
     function containsElement(bytes4[] memory array, bytes4 el) public pure returns (bool) {
         for (uint256 i = 0; i < array.length; i++) {
             if (array[i] == el) {

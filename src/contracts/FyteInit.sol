@@ -16,6 +16,9 @@ import { IDiamondCut } from "./dependencies/interfaces/IDiamondCut.sol";
 import { IERC173 } from "./dependencies/interfaces/IERC173.sol";
 import { IERC165 } from "./dependencies/interfaces/IERC165.sol";
 
+// TO:DO
+// 1. Add ERC721 metadata
+
 // It is expected that this contract is customized if you want to deploy your diamond
 // with data from a deployment script. Use the init function to initialize state variables
 // of your diamond. Add parameters to the init funciton if you need to.
