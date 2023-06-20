@@ -8,6 +8,7 @@
     "max-line-length": ["error", 122],
     "named-parameters-mapping": "warn",
     "no-console": "off",
-    "not-rely-on-time": "off"
+    "not-rely-on-time": "off",
+    "no-inline-assembly": "off"
   }
 }
