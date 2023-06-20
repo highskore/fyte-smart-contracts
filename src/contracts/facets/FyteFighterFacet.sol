@@ -4,11 +4,11 @@ pragma solidity ^0.8.19;
 // Contracts
 
 import { SolidStateERC721 as ERC721 } from "solidstate-solidity/token/ERC721/SolidStateERC721.sol";
-import { ERC721BaseStorage } from "solidstate-solidity/token/ERC721/base/ERC721BaseStorage.sol";
 
 // Libraries
 
 import { LibDiamond } from "../dependencies/libraries/LibDiamond.sol";
+import { ERC721BaseStorage } from "solidstate-solidity/token/ERC721/base/ERC721BaseStorage.sol";
 
 // Storage
 
@@ -16,9 +16,9 @@ import { WithStorage } from "../libraries/WithStorage.sol";
 
 // Types
 
-import { FighterBody } from "../FyteTypes.sol";
+import { FighterBody, FigtherMintArgs, Fighter, Move } from "../FyteTypes.sol";
 
-contract FyteFigther is WithStorage, ERC721 {
+contract FyteFigtherFacet is WithStorage, ERC721 {
     /*//////////////////////////////////////////////////////////////
                                LIBRARIES
     //////////////////////////////////////////////////////////////*/
@@ -42,23 +42,66 @@ contract FyteFigther is WithStorage, ERC721 {
         _;
     }
 
+    modifier notPaused() {
+        require(!gs().paused, "Paused");
+        _;
+    }
+
     /*//////////////////////////////////////////////////////////////
                                 EXTERNAL
     //////////////////////////////////////////////////////////////*/
 
-    function mintFighter() public payable {
-        require(msg.value >= 0.01 ether, "Not enough Ether");
+    function mintFighter(FigtherMintArgs memory args) external payable notPaused {
+        require(msg.value >= gs().fighterMintCosts[args.body], "Isfficient funds to mint fighter");
+        _mintFighter(args);
     }
 
     /*//////////////////////////////////////////////////////////////
                                  PUBLIC
     //////////////////////////////////////////////////////////////*/
 
+    function getFighter(uint256 tokenId) public view returns (Fighter memory) {
+        return gs().fighters[tokenId];
+    }
+
+    function getPlayerFighters(address owner) public view returns (Fighter[] memory) {
+        uint256 balance = _balanceOf(owner);
+        Fighter[] memory fighters = new Fighter[](balance);
+
+        for (uint256 i = 0; i < balance; i++) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            fighters[i] = getFighter(tokenId);
+        }
+
+        return fighters;
+    }
+
     /*//////////////////////////////////////////////////////////////
                                 INTERNAL
     //////////////////////////////////////////////////////////////*/
 
+    function _mintFighter(FigtherMintArgs memory args) internal {
+        uint256 tokenId = _totalSupply() + 1;
+
+        Move[8] memory moves = _getBodyMoves(args.body);
+
+        Fighter memory fighter = Fighter(tokenId, args.body, moves);
+
+        gs().fighters[tokenId] = fighter;
+        _mint(args.owner, tokenId);
+        emit FigtherMinted(args.owner, tokenId);
+    }
+
     /*//////////////////////////////////////////////////////////////
                                 PRIVATE
     //////////////////////////////////////////////////////////////*/
+
+    function _getBodyMoves(FighterBody) private pure returns (Move[8] memory moves) {
+        // TO:DO -> CUSTOMIZE MOVES
+        // random moves for now
+        for (uint256 i = 0; i < 8; i++) {
+            moves[i] = Move(uint8(i), uint8(i), uint128(i), uint128(i), uint128(i));
+        }
+        return moves;
+    }
 }
