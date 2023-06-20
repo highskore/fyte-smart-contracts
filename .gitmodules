@@ -6,3 +6,6 @@
   branch = "v0"
   path = "lib/prb-test"
   url = "https://github.com/PaulRBerg/prb-test"
+[submodule "lib/solidity-stringutils"]
+	path = lib/solidity-stringutils
+	url = https://github.com/arachnid/solidity-stringutils
