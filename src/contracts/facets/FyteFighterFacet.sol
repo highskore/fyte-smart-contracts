@@ -16,7 +16,7 @@ import { WithStorage } from "../libraries/WithStorage.sol";
 
 // Types
 
-import { FighterBody, FigtherMintArgs, Fighter, Move } from "../FyteTypes.sol";
+import { FighterBody, FigtherMintArgs, Fighter, Move } from "../types/FyteTypes.sol";
 
 contract FyteFigtherFacet is WithStorage, ERC721 {
     /*//////////////////////////////////////////////////////////////

@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 // Types
 
-import { FighterBody, Fighter } from "../FyteTypes.sol";
+import { FighterBody, Fighter } from "../types/FyteTypes.sol";
 
 /*//////////////////////////////////////////////////////////////
                                 STRUCTS
@@ -11,11 +11,16 @@ import { FighterBody, Fighter } from "../FyteTypes.sol";
 
 struct GameStorage {
     // Diamond
+    //
     address diamondAddress;
     // Admin Controls
+    //
     bool paused;
     // Figthers
+    //
+    // figtherID => figther
     mapping(uint256 => Fighter) fighters;
+    // figtherBody => mintCost
     mapping(FighterBody => uint256) fighterMintCosts;
 }
 
