@@ -3,12 +3,12 @@ pragma solidity ^0.8.19;
 
 // Contracts
 
-import { ERC721 } from "solidstate-solidity/contracts/token/ERC721/ERC721.sol";
-import { ERC721BaseStorage } from "solidstate-solidity/contracts/token/ERC721/base/ERC721BaseStorage.sol";
+import { SolidStateERC721 as ERC721 } from "solidstate-solidity/token/ERC721/SolidStateERC721.sol";
+import { ERC721BaseStorage } from "solidstate-solidity/token/ERC721/base/ERC721BaseStorage.sol";
 
 // Libraries
 
-import { LibDiamond } from "../dependecies/libraries/LibDiamond.sol";
+import { LibDiamond } from "../dependencies/libraries/LibDiamond.sol";
 
 // Storage
 
