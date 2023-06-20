@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
 /**
  * \
@@ -9,11 +9,11 @@ pragma solidity ^0.8.0;
  * to solidity tests.
  * /*****************************************************************************
  */
-
-import "../lib/solidity-stringutils/strings.sol";
-import "../src/interfaces/IDiamond.sol";
-import "../src/interfaces/IDiamondLoupe.sol";
-import "../lib/forge-std/src/Test.sol";
+//solhint-disable
+import "lib/solidity-stringutils/src/strings.sol";
+import "src/contracts/dependencies/interfaces/IDiamond.sol";
+import "src/contracts/dependencies/interfaces/IDiamondLoupe.sol";
+import "lib/forge-std/src/Test.sol";
 
 abstract contract HelperContract is IDiamond, IDiamondLoupe, Test {
     using strings for *;
