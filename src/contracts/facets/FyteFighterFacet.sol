@@ -16,9 +16,9 @@ import { WithStorage } from "../libraries/WithStorage.sol";
 
 // Types
 
-import { FighterBody, FigtherMintArgs, Fighter, Move } from "../FyteTypes.sol";
+import { FighterBody, FighterMintArgs, Fighter, Move } from "../FyteTypes.sol";
 
-contract FyteFigtherFacet is WithStorage, ERC721 {
+contract FyteFighterFacet is WithStorage, ERC721 {
     /*//////////////////////////////////////////////////////////////
                                LIBRARIES
     //////////////////////////////////////////////////////////////*/
@@ -29,7 +29,7 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event FigtherMinted(address indexed _owner, uint256 indexed _tokenId);
+    event FighterMinted(address indexed _owner, uint256 indexed _tokenId);
 
     /*//////////////////////////////////////////////////////////////
                                MODIFIERS
@@ -45,12 +45,17 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
         _;
     }
 
+    modifier costSetup(FighterBody body) {
+        require(gs().fighterMintCosts[body] > 0, "Cost not setup");
+        _;
+    }
+
     /*//////////////////////////////////////////////////////////////
                                 EXTERNAL
     //////////////////////////////////////////////////////////////*/
 
-    function mintFighter(FigtherMintArgs memory args) external payable notPaused {
-        require(msg.value >= gs().fighterMintCosts[args.body], "Isfficient funds to mint fighter");
+    function mintFighter(FighterMintArgs memory args) external payable notPaused costSetup(args.body) {
+        require(msg.value >= gs().fighterMintCosts[args.body], "Insufficient funds to mint fighter");
         _mintFighter(args);
     }
 
@@ -59,6 +64,7 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
     //////////////////////////////////////////////////////////////*/
 
     function getFighter(uint256 tokenId) public view returns (Fighter memory) {
+        require(_exists(tokenId), "Fighter does not exist");
         return gs().fighters[tokenId];
     }
 
@@ -67,21 +73,29 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
         Fighter[] memory fighters = new Fighter[](balance);
 
         for (uint256 i; i < balance;) {
+            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
+            fighters[i] = getFighter(tokenId);
             unchecked {
                 ++i;
             }
-            uint256 tokenId = tokenOfOwnerByIndex(owner, i);
-            fighters[i] = getFighter(tokenId);
         }
 
         return fighters;
+    }
+
+    function setMintCost(FighterBody body, uint256 cost) public onlyOwner {
+        gs().fighterMintCosts[body] = cost;
+    }
+
+    function getMintCost(FighterBody body) public view returns (uint256) {
+        return gs().fighterMintCosts[body];
     }
 
     /*//////////////////////////////////////////////////////////////
                                 INTERNAL
     //////////////////////////////////////////////////////////////*/
 
-    function _mintFighter(FigtherMintArgs memory args) internal {
+    function _mintFighter(FighterMintArgs memory args) internal {
         uint256 tokenId = _totalSupply() + 1;
 
         Move[8] memory moves = _getBodyMoves(args.body);
@@ -90,14 +104,14 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
         gs().fighters[tokenId].body = args.body;
 
         for (uint8 i; i < moves.length;) {
+            gs().fighters[tokenId].moves[i] = moves[i];
             unchecked {
                 ++i;
             }
-            gs().fighters[tokenId].moves[i] = moves[i];
         }
 
         _mint(args.owner, tokenId);
-        emit FigtherMinted(args.owner, tokenId);
+        emit FighterMinted(args.owner, tokenId);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -108,10 +122,10 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
         // TO:DO -> CUSTOMIZE MOVES
         // random moves for now
         for (uint256 i; i < 8;) {
+            moves[i] = Move(uint8(i), uint8(i), uint128(i), uint128(i), uint128(i));
             unchecked {
                 ++i;
             }
-            moves[i] = Move(uint8(i), uint8(i), uint128(i), uint128(i), uint128(i));
         }
         return moves;
     }

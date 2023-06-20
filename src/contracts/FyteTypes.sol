@@ -10,7 +10,7 @@ enum FighterBody {
     KAZUYA
 }
 
-struct FigtherMintArgs {
+struct FighterMintArgs {
     FighterBody body;
     address owner;
 }
