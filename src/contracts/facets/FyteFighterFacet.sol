@@ -30,8 +30,6 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
     //////////////////////////////////////////////////////////////*/
 
     event FigtherMinted(address indexed _owner, uint256 indexed _tokenId);
-    event FigtherDeposited(address indexed _owner, uint256 indexed _tokenId);
-    event FigtherWithdrawn(address indexed _owner, uint256 indexed _tokenId);
 
     /*//////////////////////////////////////////////////////////////
                                MODIFIERS
@@ -68,7 +66,10 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
         uint256 balance = _balanceOf(owner);
         Fighter[] memory fighters = new Fighter[](balance);
 
-        for (uint256 i = 0; i < balance; i++) {
+        for (uint256 i; i < balance;) {
+            unchecked {
+                ++i;
+            }
             uint256 tokenId = tokenOfOwnerByIndex(owner, i);
             fighters[i] = getFighter(tokenId);
         }
@@ -85,9 +86,16 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
 
         Move[8] memory moves = _getBodyMoves(args.body);
 
-        Fighter memory fighter = Fighter(tokenId, args.body, moves);
+        gs().fighters[tokenId].id = tokenId;
+        gs().fighters[tokenId].body = args.body;
 
-        gs().fighters[tokenId] = fighter;
+        for (uint8 i; i < moves.length;) {
+            unchecked {
+                ++i;
+            }
+            gs().fighters[tokenId].moves[i] = moves[i];
+        }
+
         _mint(args.owner, tokenId);
         emit FigtherMinted(args.owner, tokenId);
     }
@@ -99,7 +107,10 @@ contract FyteFigtherFacet is WithStorage, ERC721 {
     function _getBodyMoves(FighterBody) private pure returns (Move[8] memory moves) {
         // TO:DO -> CUSTOMIZE MOVES
         // random moves for now
-        for (uint256 i = 0; i < 8; i++) {
+        for (uint256 i; i < 8;) {
+            unchecked {
+                ++i;
+            }
             moves[i] = Move(uint8(i), uint8(i), uint128(i), uint128(i), uint128(i));
         }
         return moves;
