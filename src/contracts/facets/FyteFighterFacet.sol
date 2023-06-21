@@ -36,7 +36,7 @@ contract FyteFighterFacet is WithStorage, ERC721 {
     //////////////////////////////////////////////////////////////*/
 
     modifier onlyOwner() {
-        require(LibDiamond.contractOwner() == msg.sender, "Only Owner");
+        require(LibDiamond.contractOwner() == msg.sender, "Only Owner"); // TODO: export modifiers to shared lib
         _;
     }
 
