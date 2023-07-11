@@ -10,8 +10,6 @@ contract TestFighterFacet is StateFighterFacet {
                             EXPECTED EVENTS
     //////////////////////////////////////////////////////////////*/
 
-    event FighterMinted(address indexed _owner, uint256 indexed _tokenId);
-
     /*//////////////////////////////////////////////////////////////
                                  FACET
     //////////////////////////////////////////////////////////////*/
@@ -87,7 +85,7 @@ contract TestFighterFacet is StateFighterFacet {
         // act
         vm.prank(ownerF.owner());
         fighterFacet.setMintCost(args.body, 100);
-        vm.expectRevert("Insufficient funds to mint fighter");
+        vm.expectRevert("Insufficient funds");
         fighterFacet.mintFighter(args);
 
         // assert
@@ -104,8 +102,6 @@ contract TestFighterFacet is StateFighterFacet {
         // act
         vm.prank(ownerF.owner());
         fighterFacet.setMintCost(args.body, 100);
-        vm.expectEmit(true, true, false, false);
-        emit FighterMinted(address(this), 1);
         fighterFacet.mintFighter{ value: 100 }(args);
 
         // assert

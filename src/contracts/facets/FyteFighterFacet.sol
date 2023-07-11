@@ -26,12 +26,6 @@ contract FyteFighterFacet is WithStorage, ERC721 {
     using ERC721BaseStorage for ERC721BaseStorage.Layout;
 
     /*//////////////////////////////////////////////////////////////
-                                 EVENTS
-    //////////////////////////////////////////////////////////////*/
-
-    event FighterMinted(address indexed _owner, uint256 indexed _tokenId);
-
-    /*//////////////////////////////////////////////////////////////
                                MODIFIERS
     //////////////////////////////////////////////////////////////*/
 
@@ -55,7 +49,7 @@ contract FyteFighterFacet is WithStorage, ERC721 {
     //////////////////////////////////////////////////////////////*/
 
     function mintFighter(FighterMintArgs memory args) external payable notPaused costSetup(args.body) {
-        require(msg.value >= gs().fighterMintCosts[args.body], "Insufficient funds to mint fighter");
+        require(msg.value >= gs().fighterMintCosts[args.body], "Insufficient funds");
         _mintFighter(args);
     }
 
@@ -111,7 +105,6 @@ contract FyteFighterFacet is WithStorage, ERC721 {
         }
 
         _mint(args.owner, tokenId);
-        emit FighterMinted(args.owner, tokenId);
     }
 
     /*//////////////////////////////////////////////////////////////
